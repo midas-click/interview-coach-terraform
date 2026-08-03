@@ -1,0 +1,13 @@
+variable "name" { type = string }
+variable "subnet_ids" { type = list(string) }
+variable "security_group_id" { type = string }
+variable "ecr_api_url" { type = string }
+variable "ecr_worker_url" { type = string }
+variable "execution_role_arn" { type = string }
+variable "task_role_arn" { type = string }
+variable "db_host" { type = string }
+variable "db_name" { type = string }
+variable "db_username" { type = string }
+variable "db_password_secret" { type = string }
+variable "deepseek_secret" { type = string }
+variable "sqs_queue_url" { type = string }
