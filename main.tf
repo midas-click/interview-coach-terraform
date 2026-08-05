@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
   backend "s3" {
     bucket = "ai-interview-coach"
@@ -19,6 +23,12 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+}
+
+# ── Auto-generated RDS password (meets AWS requirements) ────────────────
+resource "random_password" "db" {
+  length  = 20
+  special = false  # avoids issues with URL encoding
 }
 
 # ── Networking ──────────────────────────────────────────────────────────
@@ -34,7 +44,8 @@ module "networking" {
 module "secrets" {
   source = "./modules/secrets"
 
-  name = var.name
+  name        = var.name
+  db_password = random_password.db.result
 }
 
 # ── S3 (transcript bucket) ──────────────────────────────────────────────
@@ -69,7 +80,7 @@ module "rds" {
   security_group_id = module.networking.default_sg_id
   db_name           = var.db_name
   db_username       = var.db_username
-  db_password       = var.db_password
+  db_password       = random_password.db.result
   instance_class    = var.db_instance_class
 }
 

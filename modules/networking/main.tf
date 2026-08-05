@@ -45,6 +45,14 @@ resource "aws_security_group" "default" {
     description = "API HTTP"
   }
 
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    self        = true
+    description = "PostgreSQL within VPC"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

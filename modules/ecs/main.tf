@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "api" {
   container_definitions = jsonencode([{
     name         = "api"
     image        = var.ecr_api_url
-    command      = ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    command      = ["uvicorn", "api.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
     portMappings = [{ containerPort = 8000 }]
     environment = [
       { name = "ENVIRONMENT",    value = "production" },
@@ -54,7 +54,7 @@ resource "aws_ecs_task_definition" "worker" {
   container_definitions = jsonencode([{
     name    = "worker"
     image   = var.ecr_worker_url
-    command = ["python", "scripts/sqs_consumer.py"]
+    command = ["python", "-m", "scripts.sqs_consumer"]
     environment = [
       { name = "ENVIRONMENT",    value = "production" },
       { name = "AWS_REGION",     value = "us-east-2" },
