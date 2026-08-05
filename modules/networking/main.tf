@@ -36,6 +36,15 @@ data "aws_availability_zones" "available" {}
 resource "aws_security_group" "default" {
   name   = var.name
   vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "API HTTP"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

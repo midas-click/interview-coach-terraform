@@ -21,7 +21,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           ]
           period = 300
           stat   = "Average"
-          region = "us-east-1"
+          region = "us-east-2"
           title  = "ECS Utilization"
         }
       }

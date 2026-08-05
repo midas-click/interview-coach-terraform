@@ -10,4 +10,7 @@ variable "db_name" { type = string }
 variable "db_username" { type = string }
 variable "db_password_secret" { type = string }
 variable "deepseek_secret" { type = string }
+variable "inngest_event_key_arn" { type = string }
+variable "inngest_signing_key_arn" { type = string }
+variable "database_url_arn" { type = string }
 variable "sqs_queue_url" { type = string }

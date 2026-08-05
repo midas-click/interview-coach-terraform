@@ -11,9 +11,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "interview-intelligence-tfstate"
+    bucket = "ai-interview-coach"
     key    = "terraform.tfstate"
-    region = "us-east-1"
+    region = "us-east-2"
   }
 }
 
@@ -84,30 +84,38 @@ module "ecr" {
 module "iam" {
   source = "./modules/iam"
 
-  name              = var.name
-  transcript_bucket = module.s3.bucket_arn
-  sqs_queue_arn     = module.sqs.queue_arn
-  ecr_repo_arn      = module.ecr.repo_arn
-  rds_arn           = module.rds.db_arn
+  name                  = var.name
+  transcript_bucket     = module.s3.bucket_arn
+  sqs_queue_arn         = module.sqs.queue_arn
+  ecr_repo_arn          = module.ecr.repo_arn
+  rds_arn               = module.rds.db_arn
+  db_password_secret    = module.secrets.db_password_secret_arn
+  deepseek_secret       = module.secrets.deepseek_secret_arn
+  inngest_event_key_arn = module.secrets.inngest_event_key_arn
+  inngest_signing_key_arn = module.secrets.inngest_signing_key_arn
+  database_url_arn      = module.secrets.database_url_arn
 }
 
 # ── ECS Fargate ─────────────────────────────────────────────────────────
 module "ecs" {
   source = "./modules/ecs"
 
-  name               = var.name
-  subnet_ids         = module.networking.public_subnet_ids
-  security_group_id  = module.networking.default_sg_id
-  ecr_api_url        = module.ecr.api_repo_url
-  ecr_worker_url     = module.ecr.worker_repo_url
-  execution_role_arn = module.iam.execution_role_arn
-  task_role_arn      = module.iam.task_role_arn
-  db_host            = module.rds.db_host
-  db_name            = var.db_name
-  db_username        = var.db_username
-  db_password_secret = module.secrets.db_password_secret_arn
-  deepseek_secret    = module.secrets.deepseek_secret_arn
-  sqs_queue_url      = module.sqs.queue_url
+  name                   = var.name
+  subnet_ids             = module.networking.public_subnet_ids
+  security_group_id      = module.networking.default_sg_id
+  ecr_api_url            = module.ecr.api_repo_url
+  ecr_worker_url         = module.ecr.worker_repo_url
+  execution_role_arn     = module.iam.execution_role_arn
+  task_role_arn          = module.iam.task_role_arn
+  db_host                = module.rds.db_host
+  db_name                = var.db_name
+  db_username            = var.db_username
+  db_password_secret     = module.secrets.db_password_secret_arn
+  deepseek_secret        = module.secrets.deepseek_secret_arn
+  inngest_event_key_arn  = module.secrets.inngest_event_key_arn
+  inngest_signing_key_arn = module.secrets.inngest_signing_key_arn
+  database_url_arn       = module.secrets.database_url_arn
+  sqs_queue_url          = module.sqs.queue_url
 }
 
 # ── CloudWatch ──────────────────────────────────────────────────────────
